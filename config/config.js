@@ -1,9 +1,9 @@
 var config = {};
 
-config.email = 'let.emailer@gmail.com';
+config.email = '';
 config.email_pass = '';
-config.email_subject = 'LET Reviewer System - Verification'
-config.server_address = 'http://localhost:4200'
-config.reset_password_subjet = 'Request Reset Password';
+config.email_subject = ''
+config.server_address = ''
+config.reset_password_subjet = '';
 
 module.exports = config;
