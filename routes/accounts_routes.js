@@ -1,5 +1,6 @@
 var dac = require("../db/dac");
 var account = require("../models/account");
+var messages = require("../config/resMsg");
 var express = require("express");
 var dateFormat = require("dateformat");
 var now = new Date();
