@@ -2,10 +2,14 @@ var express = require('express');
 var router = express.Router();
 var cors = require('cors');
 
-
+/**
+ * accounts 
+ */
 var accounts = require('./accounts_routes.js');
-
+router.get('/accounts/list', accounts.list);
 router.post('/accounts/new', accounts.new);
+router.patch('/accounts/update/:id', accounts.update);
+router.delete('/accounts/delete/:id', accounts.delete);
 
 // router.use('/accounts', require('./accounts_routes.js'));
 // router.use('/items', require('./items_routes.js'));
