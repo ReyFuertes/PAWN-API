@@ -20,6 +20,15 @@ router.post('/items/new', items.new);
 router.patch('/items/update/:id', items.update);
 router.delete('/items/delete/:id', items.delete);
 
+/**
+ * pawns 
+ */
+var pawns = require('./pawns_routes.js');
+router.get('/pawns/list', pawns.list);
+router.post('/pawns/new', pawns.new);
+router.patch('/pawns/update/:id', pawns.update);
+router.delete('/pawns/delete/:id', pawns.delete);
+
 
 // router.get('/authenticate', function(req, res) {
 //   var data = ({'token':'eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIiwiY3R5IjoiSldUIn0..MxsVtuJN0QhYAdveffzkTQ.vjTkjm19bSUGFqqykHPUkg32zGULXgVyBOSRTLdTp4wYz1Xnm-hmbSWYGACYO-6LNcLckpZ5Rn4z1nrPQ1WeeuVbHZf52aXjaJxRyMhEW4jpKbb8qY5gd7Q119csc2KwmRlsRq7ii_OxD9vhiKC7eTtTjFgDI-sG5A7--Njw8CAy5EiF3BYBvMxcjLHQlYhBiUzYqCTg-8VjaaXvccNfnRtTBDyMs1GcUEKvMJvTmHY.o1_NJPIb2xRR-W7qOsPVyQ','refreshToken':'eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIiwiY3R5IjoiSldUIn0..MxsVtuJN0QhYAdveffzkTQ.vjTkjm19bSUGFqqykHPUkg32zGULXgVyBOSRTLdTp4wYz1Xnm-hmbSWYGACYO-6LNcLckpZ5Rn4z1nrPQ1WeeuVbHZf52aXjaJxRyMhEW4jpKbb8qY5gd7Q119csc2KwmRlsRq7ii_OxD9vhiKC7eTtTjFgDI-sG5A7--Njw8CAy5EiF3BYBvMxcjLHQlYhBiUzYqCTg-8VjaaXvccNfnRtTBDyMs1GcUEKvMJvTmHY.o1_NJPIb2xRR-W7qOsPVyQ'});
