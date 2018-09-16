@@ -1,7 +1,3 @@
-var account = require("./account");
-var item = require("./item");
-var pawn = require("./pawn");
-
 var renewal = (
   renewal_id,
   renewal_date,
@@ -9,8 +5,8 @@ var renewal = (
   pawn_id,
   renewal_amount,
   renewal_total_amount,
-  item_id,
-  account_id,
+  interest,
+  difference,
   remarks,
   created,
   modified
@@ -21,8 +17,8 @@ var renewal = (
   this.pawn_id = pawn_id || '';
   this.renewal_amount = renewal_amount || '';
   this.renewal_total_amount = renewal_total_amount || '';
-  this.item_id = item_id || '';
-  this.account_id = account_id || '';
+  this.interest = interest || 0;
+  this.difference = difference || 0;
   this.remarks = remarks || '';
   this.created = created || null;
   this.modified = modified || null;

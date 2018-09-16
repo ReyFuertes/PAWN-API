@@ -30,13 +30,22 @@ router.patch('/pawns/update/:id', pawns.update);
 router.delete('/pawns/delete/:id', pawns.delete);
 
 /**
- * pawns 
+ * renewals 
  */
 var renewals = require('./renewals_routes.js');
 router.get('/renewals/list', renewals.list);
 router.post('/renewals/new', renewals.new);
 router.patch('/renewals/update/:id', renewals.update);
 router.delete('/renewals/delete/:id', renewals.delete);
+
+/**
+ * redemptions 
+ */
+var redemptions = require('./redemptions_routes.js');
+router.get('/redemptions/list', redemptions.list);
+router.post('/redemptions/new', redemptions.new);
+router.patch('/redemptions/update/:id', redemptions.update);
+router.delete('/redemptions/delete/:id', redemptions.delete);
 
 
 // router.get('/authenticate', function(req, res) {
