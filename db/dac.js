@@ -17,7 +17,7 @@ var pool = mysql.createPool({
  */
 function query(sql, arg, callbackFn) {
     pool.getConnection(function (err, connection) {
-        if (err) throw err
+        if (err) throw err('Could not connect to database..')
 
         connection.query(sql, arg, function (err, rows) {
             if (err) {

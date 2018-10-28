@@ -10,7 +10,7 @@ var now = new Date();
 router = express.Router();
 
 var pawns = {
-  list: (req, res) => {
+  search: (req, res) => {
     dac.query(
       `SELECT pawns.pawn_id, pawns.pawn_ticket_number, pawns.date_loan_granted, pawns.maturity_date, pawns.expiry_date, pawns.interest, pawns.pawn_amount, pawns.pawn_total_amount, pawns.account_id, pawns.item_id, pawns.created,
               items.item_name, items.item_type, items.grams, items.karat, items.description, items.created, items.modified,
@@ -27,6 +27,67 @@ var pawns = {
         }
         res.status(200);
         res.json({ success: true, items: data });
+        return;
+      }
+    );
+  },
+  list: (req, res) => {
+    var params = req.query.params || [];
+    var param = [];
+    var querystringArr,
+      queryString = "LIMIT 10 offset 0";
+
+    if (params && params.length > 0) {
+      querystringArr = params.split("&");
+
+      querystringArr.forEach(item => {
+        var obj = { key: item.split("=")[0], value: item.split("=")[1] };
+        param.push(obj);
+      });
+
+      queryString =
+        param[0].value && param[1].value
+          ? ` LIMIT ${param[0].value} offset ${param[1].value}`
+          : "LIMIT 10 offset 0";
+    }
+
+    dac.query(
+      `SELECT (SELECT COUNT(pawn_id) FROM pawns) AS count, 
+          pawns.pawn_id, 
+          pawns.pawn_ticket_number AS pawnTicketNumber, 
+          pawns.date_loan_granted AS datePawnGranted, 
+          pawns.maturity_date, 
+          pawns.expiry_date, pawns.interest, 
+          pawns.pawn_amount, 
+          pawns.pawn_total_amount, 
+          pawns.account_id, pawns.item_id, 
+          pawns.created,
+          items.item_name, 
+          items.item_type, 
+          items.grams, 
+          items.karat, 
+          items.description, 
+          items.modified,
+          accounts.account_id, 
+          accounts.firstname, 
+          accounts.lastname, 
+          accounts.contact_number, 
+          accounts.birthday, 
+          accounts.valid_id, 
+          accounts.valid_id_number
+       FROM pawns
+       LEFT JOIN items ON pawns.item_id = items.item_id
+       LEFT JOIN accounts ON pawns.account_id = accounts.account_id
+       ${queryString}`,
+      [],
+      function(err, data) {
+        var totalCount = data[0].count;
+        data.forEach(row => {
+          delete row.count;
+        });
+
+        res.status(200);
+        res.json({ success: true, totalCount: totalCount, pawns: data });
         return;
       }
     );

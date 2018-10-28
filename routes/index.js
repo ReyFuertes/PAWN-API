@@ -6,10 +6,23 @@ var cors = require('cors');
  * accounts 
  */
 var accounts = require('./accounts_routes.js');
+router.get('/accounts/search', accounts.search);
+router.get('/account/edit', accounts.edit);
 router.get('/accounts/list', accounts.list);
-router.post('/accounts/new', accounts.new);
+router.post('/account/new', accounts.new);
 router.patch('/accounts/update/:id', accounts.update);
-router.delete('/accounts/delete/:id', accounts.delete);
+router.delete('/account/delete/:id', accounts.delete);
+
+/**
+ * pawns 
+ */
+var pawns = require('./pawns_routes.js');
+router.get('/pawn/search', pawns.search);
+router.get('/pawn/list', pawns.list);
+router.post('/pawn/new', pawns.new);
+router.patch('/pawn/update/:id', pawns.update);
+router.delete('/pawn/delete/:id', pawns.delete);
+
 
 /**
  * items 
@@ -19,15 +32,6 @@ router.get('/items/list', items.list);
 router.post('/items/new', items.new);
 router.patch('/items/update/:id', items.update);
 router.delete('/items/delete/:id', items.delete);
-
-/**
- * pawns 
- */
-var pawns = require('./pawns_routes.js');
-router.get('/pawns/list', pawns.list);
-router.post('/pawns/new', pawns.new);
-router.patch('/pawns/update/:id', pawns.update);
-router.delete('/pawns/delete/:id', pawns.delete);
 
 /**
  * renewals 
