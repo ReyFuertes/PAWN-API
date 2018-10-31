@@ -6,6 +6,7 @@ var cors = require('cors');
  * accounts 
  */
 var accounts = require('./accounts_routes.js');
+router.get('/account', accounts.getOne);
 router.get('/accounts/search', accounts.search);
 router.get('/account/edit', accounts.edit);
 router.get('/accounts/list', accounts.list);
@@ -28,6 +29,7 @@ router.delete('/pawn/delete/:id', pawns.delete);
  * items 
  */
 var items = require('./items_routes.js');
+router.get('/item', items.getOne);
 router.get('/items/list', items.list);
 router.post('/items/new', items.new);
 router.patch('/items/update/:id', items.update);

@@ -51,36 +51,40 @@ var pawns = {
           : "LIMIT 10 offset 0";
     }
 
+    // items.item_name AS itemName, 
+    // items.item_type AS itemType, 
+    // items.grams, 
+    // items.karat, 
+    // items.description, 
+    // items.modified,
+    // accounts.firstname AS firstName, 
+    // accounts.lastname AS lastName, 
+    // accounts.contact_number AS contactNumber, 
+    // accounts.birthday, 
+    // accounts.address, 
+    // accounts.valid_id AS validId, 
+    // accounts.valid_id_number AS validIdNumber
+
+    // LEFT JOIN items ON pawns.item_id = items.item_id
+    // LEFT JOIN accounts ON pawns.account_id = accounts.account_id
+
     dac.query(
       `SELECT (SELECT COUNT(pawn_id) FROM pawns) AS count, 
           pawns.pawn_id, 
           pawns.pawn_ticket_number AS pawnTicketNumber, 
-          pawns.date_loan_granted AS datePawnGranted, 
-          pawns.maturity_date, 
-          pawns.expiry_date, pawns.interest, 
-          pawns.pawn_amount, 
-          pawns.pawn_total_amount, 
-          pawns.account_id, pawns.item_id, 
-          pawns.created,
-          items.item_name, 
-          items.item_type, 
-          items.grams, 
-          items.karat, 
-          items.description, 
-          items.modified,
-          accounts.account_id, 
-          accounts.firstname, 
-          accounts.lastname, 
-          accounts.contact_number, 
-          accounts.birthday, 
-          accounts.valid_id, 
-          accounts.valid_id_number
+          pawns.pawn_date_granted AS pawnDateGranted, 
+          pawns.pawn_maturity_date AS pawnMaturityDate, 
+          pawns.pawn_expiry_date AS pawnExpiryDate, 
+          pawns.pawn_interest AS pawnInterest, 
+          pawns.pawn_amount AS pawnAmount, 
+          pawns.pawn_total_amount AS pawnTotalAmount, 
+          pawns.created
        FROM pawns
-       LEFT JOIN items ON pawns.item_id = items.item_id
-       LEFT JOIN accounts ON pawns.account_id = accounts.account_id
+       
        ${queryString}`,
       [],
       function(err, data) {
+        console.log(err);
         var totalCount = data[0].count;
         data.forEach(row => {
           delete row.count;
@@ -93,41 +97,38 @@ var pawns = {
     );
   },
   new: (req, res) => {
-    pawn.pawn_ticket_number = req.body.pawn_ticket_number || '';
-    pawn.date_loan_granted = req.body.date_loan_granted || '';
-    pawn.maturity_date = req.body.maturity_date || '';
-    pawn.expiry_date = req.body.expiry_date || '';
-    pawn.interest = req.body.interest || '';
-    pawn.pawn_amount = req.body.pawn_amount || '';
-    pawn.pawn_total_amount = req.body.pawn_total_amount || '';
-    pawn.account_id = req.body.account_id || '';
-    pawn.item_id = req.body.item_id || '';
+    pawn.pawn_ticket_number = req.body.pawnTicketNumber || '';
+    pawn.pawn_date_granted = dateFormat(req.body.date_pawn_granted, "mm/dd/yyyy") || "";
+    pawn.pawn_maturity_date = dateFormat(req.body.pawnMaturityDate, "mm/dd/yyyy") || "";
+    pawn.pawn_expiry_date =dateFormat(req.body.pawnExpiryDate, "mm/dd/yyyy") || "";
+    pawn.pawn_interest = req.body.pawnInterest || '';
+    pawn.pawn_amount = req.body.pawnAmount || '';
+    pawn.pawn_total_amount = req.body.pawnTotalAmount || '';
     pawn.created = dateFormat(now, "yyyy-mm-dd hh:mm:ss") || null;
 
-    dac.query(`INSERT INTO pawns (pawn_ticket_number, date_loan_granted, maturity_date, expiry_date, 
-                                  interest, pawn_amount, pawn_total_amount, account_id, item_id, created) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    //insert item
+
+    //insert account id
+
+    dac.query(`INSERT INTO pawns (pawn_ticket_number, pawn_date_granted, pawn_maturity_date, pawn_expiry_date, 
+                pawn_interest, pawn_amount, pawn_total_amount, created) 
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         pawn.pawn_ticket_number,
-        pawn.date_loan_granted,
-        pawn.maturity_date,
-        pawn.expiry_date,
-        pawn.interest,
+        pawn.pawn_date_granted,
+        pawn.pawn_maturity_date,
+        pawn.pawn_expiry_date,
+        pawn.pawn_interest,
         pawn.pawn_amount,
         pawn.pawn_total_amount,
-        pawn.account_id,
-        pawn.item_id,
         pawn.created
       ],
       function(err, data) {
-        //catch error
         if (err) {
           res.status(401);
           res.json(messages.ErrorResponse);
           return;
         }
-        
-        //get updated pawns
         pawns.list(req, res);
       }
     );

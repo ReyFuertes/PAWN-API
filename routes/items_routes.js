@@ -8,9 +8,30 @@ var now = new Date();
 router = express.Router();
 
 var items = {
+  getOne: (req, res) => {
+    var id = req.query.id;
+    dac.query(
+      `SELECT item_id AS id, item_name AS itemName, item_type AS itemType, grams, karat, description, created
+              FROM items 
+              WHERE item_id = ?
+              `,
+      [id],
+      function(err, data) {
+        if (err) {
+          res.status(401);
+          res.json(messages.ErrorResponse);
+          return;
+        }
+
+        res.status(200);
+        res.json({ success: true, item: data });
+        return;
+      }
+    );
+  },
   list: (req, res) => {
     dac.query(
-      `SELECT item_id, item_name, item_type, grams, karat, description, created, modified FROM items`,
+      `SELECT item_id AS id, item_name AS itemName, item_type AS itemType, grams, karat, description, created, modified FROM items`,
       [],
       function(err, data) {
         if (err) {
@@ -25,14 +46,15 @@ var items = {
     );
   },
   new: (req, res) => {
-    item.item_name = req.body.item_name || '';
-    item.item_type = req.body.item_type || '';
-    item.grams = req.body.grams || '';
-    item.karat = req.body.karat || '';
-    item.description = req.body.description || '';
+    item.item_name = req.body.item_name || "";
+    item.item_type = req.body.item_type || "";
+    item.grams = req.body.grams || "";
+    item.karat = req.body.karat || "";
+    item.description = req.body.description || "";
     item.created = dateFormat(now, "yyyy-mm-dd hh:mm:ss") || null;
 
-    dac.query(`INSERT INTO items (item_name, item_type, grams, karat, description, created) 
+    dac.query(
+      `INSERT INTO items (item_name, item_type, grams, karat, description, created) 
             VALUES (?, ?, ?, ?, ?, ?)`,
       [
         item.item_name,
@@ -49,7 +71,7 @@ var items = {
           res.json(messages.ErrorResponse);
           return;
         }
-        
+
         //get updated items
         items.list(req, res);
       }
@@ -57,11 +79,11 @@ var items = {
   },
   update: (req, res) => {
     item.item_id = req.params.id || 0;
-    item.item_name = req.body.item_name || '';
-    item.item_type = req.body.item_type || '';
+    item.item_name = req.body.item_name || "";
+    item.item_type = req.body.item_type || "";
     item.grams = parseInt(req.body.grams) || 0;
     item.karat = parseInt(req.body.karat) || 0;
-    item.description = req.body.description || '';
+    item.description = req.body.description || "";
     item.modified = dateFormat(now, "yyyy-mm-dd hh:mm:ss") || null;
 
     dac.query(
@@ -92,19 +114,18 @@ var items = {
   delete: (req, res) => {
     item.item_id = req.params.id || 0;
 
-    dac.query(
-      `DELETE FROM items WHERE item_id = ?`,
-      [item.item_id],
-      function(err, data) {
-        if (err) {
-          res.status(401);
-          res.json(messages.ErrorResponse);
-          return;
-        }
-        //get updated items
-        items.list(req, res);
+    dac.query(`DELETE FROM items WHERE item_id = ?`, [item.item_id], function(
+      err,
+      data
+    ) {
+      if (err) {
+        res.status(401);
+        res.json(messages.ErrorResponse);
+        return;
       }
-    );
+      //get updated items
+      items.list(req, res);
+    });
   }
 };
 

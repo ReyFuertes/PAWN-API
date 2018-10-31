@@ -7,6 +7,27 @@ var now = new Date();
 router = express.Router();
 
 var accounts = {
+  getOne: (req, res) => {
+    var id = req.query.id;
+    dac.query(`SELECT account_id AS id, id_number AS idNumber, firstname AS firstName, lastname AS lastName, CONCAT(firstname, ',', lastname) AS fullname, 
+                  contact_number AS phoneNumber, birthday, valid_id AS validId, valid_id_number AS validIdNumber, address 
+                FROM accounts 
+                WHERE account_id = ?
+                `, 
+             [id], function(err, data) {
+   
+        if (err) {
+          res.status(401);
+          res.json(messages.ErrorResponse);
+          return;
+        }
+
+        res.status(200);
+        res.json({ success: true, account: data });
+        return;
+      }
+    );
+  },
   search: (req, res) => {
     var searchTerm = req.query.term;
 
