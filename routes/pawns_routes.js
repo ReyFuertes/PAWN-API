@@ -129,7 +129,7 @@ var pawns = {
     }
 
     dac.query(
-      `SELECT (SELECT COUNT(pawn_id) FROM pawns) AS count, 
+      `SELECT (SELECT COUNT(pawn_id) AS count FROM pawns) AS count, 
           pawns.pawn_id AS id, 
           pawns.pawn_ticket_number AS pawnTicketNumber, 
           pawns.pawn_date_granted AS pawnDateGranted, 
@@ -156,14 +156,17 @@ var pawns = {
        FROM pawns
         LEFT JOIN items ON pawns.item_id = items.item_id
         LEFT JOIN accounts ON pawns.account_id = accounts.account_id
-      ORDER BY pawns.created DESC
+      ORDER BY pawns.created DESC 
        ${queryString}`,
       [],
       function(err, data) {
-        var totalCount = data[0].count;
-        data.forEach(row => {
-          delete row.count;
-        });
+        var totalCount = 0;
+        if(data.length > 0) {
+          totalCount = data[0].count;
+          data.forEach(row => {
+            delete row.count;
+          });
+        }
 
         res.status(200);
         res.json({ success: true, totalCount: totalCount, pawns: data });

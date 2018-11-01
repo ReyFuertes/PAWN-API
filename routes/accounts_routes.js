@@ -110,7 +110,7 @@ var accounts = {
     }
 
     dac.query(
-      `SELECT (SELECT COUNT(account_id) AS count FROM accounts) AS count, 
+      `SELECT (SELECT COUNT(account_id) FROM accounts) AS count, 
                   account_id AS id, 
                   id_number AS idNumber, 
                   CONCAT(firstname, ',', lastname) AS fullname, 
@@ -130,10 +130,13 @@ var accounts = {
           return;
         }
 
-        var totalCount = data[0].count;
-        data.forEach(row => {
-          delete row.count;
-        });
+        var totalCount = 0;
+        if(data.length > 0) {
+          totalCount = data[0].count;
+          data.forEach(row => {
+            delete row.count;
+          });
+        }
 
         res.status(200);
         res.json({ success: true, totalCount: totalCount, accounts: data });

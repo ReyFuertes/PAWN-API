@@ -29,12 +29,14 @@ router.delete('/pawn/delete/:id', pawns.delete);
 /**
  * items 
  */
-var items = require('./items_routes.js');
-router.get('/item', items.getOne);
+var items = require('./items_routes.js'); 
+router.get('/item/getTypes', items.getTypes);
+router.get('/item/search', items.search);
+router.get('/item/edit', items.edit);
 router.get('/items/list', items.list);
-router.post('/items/new', items.new);
-router.patch('/items/update/:id', items.update);
-router.delete('/items/delete/:id', items.delete);
+router.post('/item/new', items.new);
+router.patch('/item/update/:id', items.update);
+router.delete('/item/delete/:id', items.delete);
 
 /**
  * renewals 
