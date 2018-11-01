@@ -19,6 +19,7 @@ router.delete('/account/delete/:id', accounts.delete);
  */
 var pawns = require('./pawns_routes.js');
 router.get('/pawn/search', pawns.search);
+router.get('/pawn/edit', pawns.edit);
 router.get('/pawn/list', pawns.list);
 router.post('/pawn/new', pawns.new);
 router.patch('/pawn/update/:id', pawns.update);

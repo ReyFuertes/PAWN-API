@@ -12,6 +12,21 @@ var helpers = {
         return mapItem[prop];
       }).indexOf(item[prop]) === index;
     })
+  },
+  getParams(req) {
+    var params = req.query.params || [];
+    var param = [];
+    var querystringArr;
+  
+    if (params && params.length > 0) {
+      querystringArr = params.split("&");
+  
+      querystringArr.forEach(item => {
+        var obj = { key: item.split("=")[0], value: item.split("=")[1] };
+        param.push(obj);
+      });
+    }
+    return param;
   }
 }
 

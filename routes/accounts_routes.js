@@ -10,7 +10,7 @@ var accounts = {
   getOne: (req, res) => {
     var id = req.query.id;
     dac.query(`SELECT account_id AS id, id_number AS idNumber, firstname AS firstName, lastname AS lastName, CONCAT(firstname, ',', lastname) AS fullname, 
-                  contact_number AS phoneNumber, birthday, valid_id AS validId, valid_id_number AS validIdNumber, address 
+                  contact_number AS phoneNumber, birthday AS birthDate, valid_id AS validId, valid_id_number AS validIdNumber, address 
                 FROM accounts 
                 WHERE account_id = ?
                 `, 

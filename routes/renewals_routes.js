@@ -12,7 +12,7 @@ var renewals = {
     dac.query(
       `SELECT renewals.renewal_id, renewals.renewal_date, renewals.renewal_pawn_ticket, renewals.pawn_id, renewals.renewal_amount, renewals.renewal_total_amount, renewals.interest, renewals.difference, renewals.remarks, renewals.created, renewals.modified,
               pawns.pawn_id, pawns.pawn_ticket_number, pawns.date_loan_granted, pawns.maturity_date, pawns.expiry_date, pawns.interest, pawns.pawn_amount, pawns.pawn_total_amount, pawns.account_id, pawns.item_id, pawns.created,
-              accounts.account_id, accounts.firstname, accounts.lastname, accounts.contact_number, accounts.birthday, accounts.valid_id, accounts.valid_id_number, accounts.address, accounts.created
+              accounts.account_id, accounts.firstname, accounts.lastname, accounts.contact_number, accounts.birthday AS birthDate, accounts.valid_id, accounts.valid_id_number, accounts.address, accounts.created
        FROM renewals
        LEFT JOIN pawns ON pawns.pawn_id = renewals.pawn_id
        LEFT JOIN accounts ON accounts.account_id = pawns.account_id
