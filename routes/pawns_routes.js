@@ -88,22 +88,60 @@ var pawns = {
     );
   },
   search: (req, res) => {
-    dac.query(
-      `SELECT pawns.pawn_id, pawns.pawn_ticket_number, pawns.date_loan_granted, pawns.maturity_date, pawns.expiry_date, pawns.interest, pawns.pawn_amount, pawns.pawn_total_amount, pawns.account_id, pawns.item_id, pawns.created,
-              items.item_name, items.item_type, items.grams, items.karat, items.description, items.created, items.modified,
-              accounts.account_id, accounts.firstname, accounts.lastname, accounts.contact_number, accounts.birthday, accounts.valid_id, accounts.valid_id_number, accounts.address, accounts.created
-       FROM pawns
-       LEFT JOIN items ON pawns.item_id = items.item_id
-       LEFT JOIN accounts ON pawns.account_id = accounts.account_id`,
-      [],
-      function(err, data) {
+    var searchTerm = req.query.term;
+    dac.query(`SELECT (SELECT COUNT(pawn_id) FROM pawns) AS count, 
+                  pawns.pawn_id AS id, 
+                  pawns.pawn_ticket_number AS pawnTicketNumber, 
+                  pawns.pawn_date_granted AS pawnDateGranted, 
+                  pawns.pawn_maturity_date AS pawnMaturityDate, 
+                  pawns.pawn_expiry_date AS pawnExpiryDate, 
+                  pawns.pawn_interest AS pawnInterest, 
+                  pawns.pawn_amount AS pawnAmount, 
+                  pawns.pawn_total_amount AS pawnTotalAmount, 
+                  DATE_FORMAT(pawns.created, '%m/%e/%Y') AS created,
+                  items.item_name AS itemName, 
+                  items.item_type AS itemType, 
+                  items.grams, 
+                  items.karat, 
+                  items.description, 
+                  items.modified,
+                  accounts.firstname AS firstName, 
+                  accounts.lastname AS lastName, 
+                  CONCAT(firstname, ',', lastname) AS fullname,
+                  accounts.contact_number AS contactNumber, 
+                  accounts.birthday AS birthDate, 
+                  accounts.address, 
+                  accounts.valid_id AS validId, 
+                  accounts.valid_id_number AS validIdNumber
+              FROM pawns
+                LEFT JOIN items ON pawns.item_id = items.item_id
+                LEFT JOIN accounts ON pawns.account_id = accounts.account_id
+                WHERE 
+                  pawn_ticket_number LIKE ? OR
+                  firstname LIKE ? OR
+                  lastname LIKE ? OR
+                  item_name LIKE ? OR
+                  pawn_date_granted LIKE ?
+                ORDER BY pawn_id DESC`, 
+             [`%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`,
+              `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`], function(err, data) {
+        
         if (err) {
           res.status(401);
           res.json(messages.ErrorResponse);
           return;
         }
+
+        var totalCount = 0;
+        if(data.length > 0) {
+          totalCount = data[0].count;
+          data.forEach(row => {
+            delete row.count;
+          });
+        }
+
         res.status(200);
-        res.json({ success: true, items: data });
+        res.json({ success: true, totalCount: totalCount, pawns: data });
         return;
       }
     );

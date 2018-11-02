@@ -44,6 +44,7 @@ router.delete('/item/delete/:id', items.delete);
 var renewals = require('./renewals_routes.js');
 router.get('/renewal/list', renewals.list);
 router.post('/renewal/new', renewals.new);
+router.get('/renewal/edit', renewals.edit);
 router.patch('/renewal/update/:id', renewals.update);
 router.delete('/renewal/delete/:id', renewals.delete);
 
