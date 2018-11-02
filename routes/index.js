@@ -11,7 +11,7 @@ router.get('/accounts/search', accounts.search);
 router.get('/account/edit', accounts.edit);
 router.get('/accounts/list', accounts.list);
 router.post('/account/new', accounts.new);
-router.patch('/accounts/update/:id', accounts.update);
+router.patch('/account/update/:id', accounts.update);
 router.delete('/account/delete/:id', accounts.delete);
 
 /**

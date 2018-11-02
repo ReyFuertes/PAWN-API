@@ -66,8 +66,8 @@ var accounts = {
     dac.query(
       `SELECT account_id AS id, 
                 id_number AS idNumber, 
-                firstName, 
-                lastName,
+                firstname AS firstName, 
+                lastname AS lastName,
                 contact_number AS phoneNumber, 
                 birthday AS birthDate, 
                 valid_id AS validId, 
@@ -84,7 +84,7 @@ var accounts = {
         }
 
         res.status(200);
-        res.json({ success: true, accounts: data });
+        res.json({ success: true, accounts: data[0] });
         return;
       }
     );
@@ -185,21 +185,21 @@ var accounts = {
   },
   update: (req, res) => {
     account.account_id = req.params.id || 0;
-    account.id_number = req.params.id_number || "";
-    account.firstname = req.body.firstname || "";
-    account.lastname = req.body.lastname || "";
-    account.contact_number = req.body.contact_number || "";
-    account.birthday = dateFormat(req.body.birthday, "yyyy-mm-dd") || "";
-    account.valid_id = req.body.valid_id || "";
-    account.valid_id_number = req.body.valid_id_number || "";
+    account.id_number = req.body.idNumber || "";
+    account.firstname = req.body.firstName || "";
+    account.lastname = req.body.lastName || "";
+    account.contact_number = req.body.phoneNumber || "";
+    account.birthday = dateFormat(req.body.birthDate, "mm/dd/yyyy") || "";
+    account.valid_id = req.body.validId || "";
+    account.valid_id_number = req.body.validIdNumber || "";
     account.address = req.body.address || "";
     account.modified = dateFormat(now, "yyyy-mm-dd") || "";
-
+    console.log(account);
     dac.query(
       `UPDATE accounts SET id_number = ?, firstname = ?, lastname = ?, contact_number = ?, birthday = ?, valid_id = ?, valid_id_number = ?, address = ?, modified = ? 
             WHERE account_id = ?`,
       [
-        account.account_id,
+        account.id_number,
         account.firstname,
         account.lastname,
         account.contact_number,
