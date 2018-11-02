@@ -9,6 +9,33 @@ var helpers = require('../config/helpersFn');
 router = express.Router();
 
 var items = {
+  getOne: (req, res) => {
+    var id = req.query.id;
+    dac.query(`SELECT item_id AS id, 
+                sku,
+                item_name AS itemName, 
+                item_type AS itemType, 
+                grams, 
+                karat, 
+                description, 
+                created, 
+                modified 
+              FROM items 
+              WHERE item_id = ?`, 
+             [id], function(err, data) {
+   
+        if (err) {
+          res.status(401);
+          res.json(messages.ErrorResponse);
+          return;
+        }
+
+        res.status(200);
+        res.json({ success: true, item: data[0] });
+        return;
+      }
+    );
+  },
   getTypes: (req, res) => {
     dac.query(`SELECT id, name, description FROM item_types`, [],
       function(err, data) {

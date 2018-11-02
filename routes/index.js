@@ -25,11 +25,11 @@ router.post('/pawn/new', pawns.new);
 router.patch('/pawn/update/:id', pawns.update);
 router.delete('/pawn/delete/:id', pawns.delete);
 
-
 /**
  * items 
  */
 var items = require('./items_routes.js'); 
+router.get('/item', items.getOne);
 router.get('/item/getTypes', items.getTypes);
 router.get('/item/search', items.search);
 router.get('/item/edit', items.edit);
@@ -42,10 +42,10 @@ router.delete('/item/delete/:id', items.delete);
  * renewals 
  */
 var renewals = require('./renewals_routes.js');
-router.get('/renewals/list', renewals.list);
-router.post('/renewals/new', renewals.new);
-router.patch('/renewals/update/:id', renewals.update);
-router.delete('/renewals/delete/:id', renewals.delete);
+router.get('/renewal/list', renewals.list);
+router.post('/renewal/new', renewals.new);
+router.patch('/renewal/update/:id', renewals.update);
+router.delete('/renewal/delete/:id', renewals.delete);
 
 /**
  * redemptions 

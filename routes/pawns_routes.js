@@ -185,7 +185,7 @@ var pawns = {
     pawn.item_id = req.body.item.id;
     pawn.account_id = req.body.account.id;
     pawn.created = dateFormat(now, "yyyy-mm-dd hh:mm:ss") || null;
-
+    
     dac.query(
       `INSERT INTO pawns (pawn_ticket_number, pawn_date_granted, pawn_maturity_date, pawn_expiry_date, 
                 pawn_interest, pawn_amount, pawn_total_amount, account_id, item_id, created) 
