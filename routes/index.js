@@ -3,6 +3,12 @@ var router = express.Router();
 var cors = require('cors');
 
 /**
+ * dashboard 
+ */
+var dashboard = require('./dashboard_routes.js');
+router.get('/dashboard/getDashboardReports', dashboard.getDashboardReports);
+
+/**
  * accounts 
  */
 var accounts = require('./accounts_routes.js');
@@ -52,10 +58,11 @@ router.delete('/renewal/delete/:id', renewals.delete);
  * redemptions 
  */
 var redemptions = require('./redemptions_routes.js');
-router.get('/redemptions/list', redemptions.list);
-router.post('/redemptions/new', redemptions.new);
-router.patch('/redemptions/update/:id', redemptions.update);
-router.delete('/redemptions/delete/:id', redemptions.delete);
+router.get('/redemption/list', redemptions.list);
+router.post('/redemption/new', redemptions.new);
+router.get('/redemption/edit', redemptions.edit);
+router.patch('/redemption/update/:id', redemptions.update);
+router.delete('/redemption/delete/:id', redemptions.delete);
 
 /**
  * user auth 

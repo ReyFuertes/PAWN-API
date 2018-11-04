@@ -2,6 +2,7 @@ var renewal = (
   renewal_id,
   renewal_date,
   renewal_pawn_ticket,
+  new_pawn_number,
   pawn_id,
   renewal_amount,
   renewal_total_amount,
@@ -14,6 +15,7 @@ var renewal = (
   this.renewal_id = renewal_id || '';
   this.renewal_date = renewal_date || '';
   this.renewal_pawn_ticket = renewal_pawn_ticket || '';
+  this.new_pawn_number = new_pawn_number || '';
   this.pawn_id = pawn_id || '';
   this.renewal_amount = renewal_amount || '';
   this.renewal_total_amount = renewal_total_amount || '';

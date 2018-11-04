@@ -79,6 +79,7 @@ var renewals = {
                 renewals.renewal_id AS id, 
                 renewals.renewal_date AS renewalDate, 
                 renewals.renewal_pawn_ticket AS renewalPawnTicket, 
+                renewals.new_pawn_number AS newPawnNumber, 
                 renewals.renewal_amount AS renewalAmount, 
                 renewals.renewal_total_amount AS renewalTotalAmount, 
                 renewals.interest, 
@@ -137,6 +138,7 @@ var renewals = {
             id: i.id,
             renewalDate: i.renewalDate,
             renewalPawnTicket: i.renewalPawnTicket,
+            newPawnNumber: req.body.newPawnNumber,
             pawnMaturityDate: i.pawnMaturityDate,
             renewalAmount: i.renewalAmount,
             renewalTotalAmount: i.renewalTotalAmount,
@@ -208,6 +210,7 @@ var renewals = {
         renewals.renewal_id AS id, 
         renewals.renewal_date AS renewalDate, 
         renewals.renewal_pawn_ticket AS renewalPawnTicket, 
+        renewals.new_pawn_number AS newPawnNumber,
         renewals.renewal_amount AS renewalAmount, 
         renewals.renewal_total_amount AS renewalTotalAmount, 
         renewals.interest, 
@@ -273,6 +276,7 @@ var renewals = {
   new: (req, res) => {
     renewal.renewal_date = req.body.renewalDate || '';
     renewal.renewal_pawn_ticket = req.body.renewalPawnTicket || '';
+    renewal.new_pawn_number  = req.body.newPawnNumber || '';
     renewal.renewal_amount = req.body.renewalAmount || '';
     renewal.renewal_total_amount = req.body.renewalTotalAmount || '';
     renewal.interest = req.body.interest || '';
@@ -280,13 +284,14 @@ var renewals = {
     renewal.remarks = req.body.remarks || '';
     renewal.pawn_id = req.body.pawnId || '';
     renewal.created = dateFormat(now, "yyyy-mm-dd hh:mm:ss") || "";
-
+   
     dac.query(
-      `INSERT INTO renewals (renewal_date, renewal_pawn_ticket, renewal_amount, renewal_total_amount, interest, difference, remarks, pawn_id, created) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO renewals (renewal_date, renewal_pawn_ticket, new_pawn_number, renewal_amount, renewal_total_amount, interest, difference, remarks, pawn_id, created) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         renewal.renewal_date,
         renewal.renewal_pawn_ticket,
+        renewal.new_pawn_number,
         renewal.renewal_amount,
         renewal.renewal_total_amount,
         renewal.interest,
@@ -312,6 +317,7 @@ var renewals = {
     renewal.renewal_id = req.params.id || 0;
     renewal.renewal_date = req.body.renewalDate || '';
     renewal.renewal_pawn_ticket = req.body.renewalPawnTicket || '';
+    renewal.new_pawn_number  = req.body.newPawnNumber || '';
     renewal.renewal_amount = req.body.renewalAmount || '';
     renewal.renewal_total_amount = req.body.renewalTotalAmount || '';
     renewal.interest = req.body.interest || '';
@@ -322,11 +328,12 @@ var renewals = {
 
     dac.query(
       `UPDATE renewals 
-        SET renewal_date = ?, renewal_pawn_ticket = ?, renewal_amount = ?, renewal_total_amount = ?, interest = ?, difference = ?, remarks = ?, modified = ?, pawn_id = ?
+        SET renewal_date = ?, renewal_pawn_ticket = ?, new_pawn_number = ?, renewal_amount = ?, renewal_total_amount = ?, interest = ?, difference = ?, remarks = ?, modified = ?, pawn_id = ?
        WHERE renewal_id = ?`,
       [
         renewal.renewal_date,
         renewal.renewal_pawn_ticket,
+        renewal.new_pawn_number,
         renewal.renewal_amount,
         renewal.renewal_total_amount,
         renewal.interest,

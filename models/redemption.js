@@ -1,6 +1,7 @@
 var redemption = (
   redemption_id,
   redemption_date,
+  redemption_pawn_ticket,
   pawn_id,
   redemption_amount,
   redemption_total_amount,
@@ -12,6 +13,7 @@ var redemption = (
 ) => {
   this.redemption_id = redemption_id || '';
   this.redemption_date = redemption_date || '';
+  this.redemption_pawn_ticket = redemption_pawn_ticket || '';
   this.pawn_id = pawn_id || '';
   this.redemption_amount = redemption_amount || '';
   this.redemption_total_amount = redemption_total_amount || '';
