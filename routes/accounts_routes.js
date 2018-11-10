@@ -118,7 +118,8 @@ var accounts = {
                   birthday, 
                   valid_id AS validId, 
                   valid_id_number AS validIdNumber, 
-                  address
+                  address,
+                  DATE_FORMAT(created, '%m/%e/%Y') AS created
                FROM accounts 
                ORDER by id DESC 
                ${queryString}`,
@@ -194,7 +195,7 @@ var accounts = {
     account.valid_id_number = req.body.validIdNumber || "";
     account.address = req.body.address || "";
     account.modified = dateFormat(now, "yyyy-mm-dd") || "";
-    console.log(account);
+ 
     dac.query(
       `UPDATE accounts SET id_number = ?, firstname = ?, lastname = ?, contact_number = ?, birthday = ?, valid_id = ?, valid_id_number = ?, address = ?, modified = ? 
             WHERE account_id = ?`,
