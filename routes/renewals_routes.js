@@ -8,6 +8,68 @@ var helpers = require('../config/helpersFn');
 router = express.Router();
 
 var renewals = {
+  print: (req, res) => {
+    var params = req.query;
+    dac.query(`SELECT (SELECT COUNT(renewal_id) FROM renewals) AS count, 
+                renewals.renewal_id AS id, 
+                renewals.renewal_date AS renewalDate, 
+                renewals.renewal_pawn_ticket AS renewalPawnTicket, 
+                renewals.new_pawn_number AS newPawnNumber,
+                renewals.renewal_amount AS renewalAmount, 
+                renewals.renewal_total_amount AS renewalTotalAmount, 
+                renewals.interest, 
+                renewals.difference, 
+                renewals.remarks, 
+                DATE_FORMAT(renewals.created, '%m/%e/%Y') AS created, 
+                DATE_FORMAT(renewals.modified, '%m/%e/%Y') AS modified, 
+                renewals.pawn_id AS pawnId,
+
+                accounts.account_id, 
+                accounts.id_number AS idNumber, 
+                CONCAT(accounts.firstname, ',', accounts.lastname) AS fullname, 
+                accounts.contact_number AS phoneNumber, 
+                accounts.birthday, 
+                accounts.valid_id AS validId, 
+                accounts.valid_id_number AS validIdNumber, 
+                accounts.address,
+
+                pawns.pawn_ticket_number AS pawnTicketNumber, 
+                pawns.pawn_date_granted AS pawnDateGranted, 
+                pawns.pawn_maturity_date AS pawnMaturityDate, 
+                pawns.pawn_expiry_date AS pawnExpiryDate, 
+                pawns.pawn_interest AS pawnInterest, 
+                pawns.pawn_amount AS pawnAmount, 
+                pawns.pawn_total_amount AS pawnTotalAmount, 
+
+                items.item_id, 
+                items.sku AS sku,
+                items.item_name AS itemName, 
+                items.item_type AS itemType, 
+                items.grams, 
+                items.karat, 
+                items.description
+
+              FROM renewals
+              
+              LEFT JOIN pawns ON pawns.pawn_id = renewals.pawn_id
+              LEFT JOIN accounts ON accounts.account_id = pawns.account_id
+              LEFT JOIN items ON items.item_id = pawns.item_id
+              WHERE renewals.created BETWEEN '${dateFormat(params.from, 'yyyy-mm-dd')}' AND '${dateFormat(params.to, 'yyyy-mm-dd')}'
+              ORDER BY renewals.created DESC `,
+      [],
+      function(err, data) {
+        if (err) {
+          res.status(401);
+          res.json(messages.ErrorResponse);
+          return;
+        }
+
+        res.status(200);
+        res.json({ success: true, renewals: data });
+        return;
+      }
+    );
+  },
   search: (req, res) => {
     dac.query(`SELECT (SELECT COUNT(renewal_id) FROM renewals) AS count, 
                   renewals.renewal_id AS id, 
@@ -207,51 +269,51 @@ var renewals = {
 
     dac.query( 
       `SELECT (SELECT COUNT(renewal_id) FROM renewals) AS count, 
-        renewals.renewal_id AS id, 
-        renewals.renewal_date AS renewalDate, 
-        renewals.renewal_pawn_ticket AS renewalPawnTicket, 
-        renewals.new_pawn_number AS newPawnNumber,
-        renewals.renewal_amount AS renewalAmount, 
-        renewals.renewal_total_amount AS renewalTotalAmount, 
-        renewals.interest, 
-        renewals.difference, 
-        renewals.remarks, 
-        renewals.created, 
-        renewals.modified,
-        renewals.pawn_id AS pawnId,
+          renewals.renewal_id AS id, 
+          renewals.renewal_date AS renewalDate, 
+          renewals.renewal_pawn_ticket AS renewalPawnTicket, 
+          renewals.new_pawn_number AS newPawnNumber,
+          renewals.renewal_amount AS renewalAmount, 
+          renewals.renewal_total_amount AS renewalTotalAmount, 
+          renewals.interest, 
+          renewals.difference, 
+          renewals.remarks, 
+          renewals.created, 
+          renewals.modified,
+          renewals.pawn_id AS pawnId,
 
-        accounts.account_id, 
-        accounts.id_number AS idNumber, 
-        CONCAT(accounts.firstname, ',', accounts.lastname) AS fullname, 
-        accounts.contact_number AS phoneNumber, 
-        accounts.birthday, 
-        accounts.valid_id AS validId, 
-        accounts.valid_id_number AS validIdNumber, 
-        accounts.address,
+          accounts.account_id, 
+          accounts.id_number AS idNumber, 
+          CONCAT(accounts.firstname, ',', accounts.lastname) AS fullname, 
+          accounts.contact_number AS phoneNumber, 
+          accounts.birthday, 
+          accounts.valid_id AS validId, 
+          accounts.valid_id_number AS validIdNumber, 
+          accounts.address,
 
-        pawns.pawn_ticket_number AS pawnTicketNumber, 
-        pawns.pawn_date_granted AS pawnDateGranted, 
-        pawns.pawn_maturity_date AS pawnMaturityDate, 
-        pawns.pawn_expiry_date AS pawnExpiryDate, 
-        pawns.pawn_interest AS pawnInterest, 
-        pawns.pawn_amount AS pawnAmount, 
-        pawns.pawn_total_amount AS pawnTotalAmount, 
+          pawns.pawn_ticket_number AS pawnTicketNumber, 
+          pawns.pawn_date_granted AS pawnDateGranted, 
+          pawns.pawn_maturity_date AS pawnMaturityDate, 
+          pawns.pawn_expiry_date AS pawnExpiryDate, 
+          pawns.pawn_interest AS pawnInterest, 
+          pawns.pawn_amount AS pawnAmount, 
+          pawns.pawn_total_amount AS pawnTotalAmount, 
 
-        items.item_id, 
-        items.sku AS sku,
-        items.item_name AS itemName, 
-        items.item_type AS itemType, 
-        items.grams, 
-        items.karat, 
-        items.description
+          items.item_id, 
+          items.sku AS sku,
+          items.item_name AS itemName, 
+          items.item_type AS itemType, 
+          items.grams, 
+          items.karat, 
+          items.description
 
-       FROM renewals
-       
-      LEFT JOIN pawns ON pawns.pawn_id = renewals.pawn_id
-      LEFT JOIN accounts ON accounts.account_id = pawns.account_id
-      LEFT JOIN items ON items.item_id = pawns.item_id
-      ORDER BY renewals.created DESC 
-      ${queryString}`, 
+        FROM renewals
+        
+        LEFT JOIN pawns ON pawns.pawn_id = renewals.pawn_id
+        LEFT JOIN accounts ON accounts.account_id = pawns.account_id
+        LEFT JOIN items ON items.item_id = pawns.item_id
+        ORDER BY renewals.created DESC 
+        ${queryString}`, 
        [], function(err, data) {
         if (err) {
           res.status(401);

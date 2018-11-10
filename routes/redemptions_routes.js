@@ -8,6 +8,68 @@ var helpers = require('../config/helpersFn');
 router = express.Router();
 
 var redemptions = {
+  print: (req, res) => {
+    var params = req.query;
+    dac.query(`SELECT
+                  redemptions.redemption_id AS id, 
+                  redemptions.redemption_date AS redemptionDate, 
+                  redemptions.redemption_pawn_ticket AS redemptionPawnTicket, 
+                  redemptions.redemption_amount AS redemptionAmount, 
+                  redemptions.redemption_total_amount AS redemptionTotalAmount, 
+                  redemptions.interest, 
+                  redemptions.difference, 
+                  redemptions.remarks, 
+                  DATE_FORMAT(redemptions.created, '%m/%e/%Y') AS created, 
+                  DATE_FORMAT(redemptions.modified, '%m/%e/%Y') AS modified, 
+                  redemptions.pawn_id AS pawnId,
+
+                  accounts.account_id, 
+                  accounts.id_number AS idNumber, 
+                  CONCAT(accounts.firstname, ',', accounts.lastname) AS fullname, 
+                  accounts.contact_number AS phoneNumber, 
+                  accounts.birthday, 
+                  accounts.valid_id AS validId, 
+                  accounts.valid_id_number AS validIdNumber, 
+                  accounts.address,
+
+                  pawns.pawn_ticket_number AS pawnTicketNumber, 
+                  pawns.pawn_date_granted AS pawnDateGranted, 
+                  pawns.pawn_maturity_date AS pawnMaturityDate, 
+                  pawns.pawn_expiry_date AS pawnExpiryDate, 
+                  pawns.pawn_interest AS pawnInterest, 
+                  pawns.pawn_amount AS pawnAmount, 
+                  pawns.pawn_total_amount AS pawnTotalAmount, 
+
+                  items.item_id, 
+                  items.sku AS sku,
+                  items.item_name AS itemName, 
+                  items.item_type AS itemType, 
+                  items.grams, 
+                  items.karat, 
+                  items.description
+
+                FROM redemptions
+                
+                LEFT JOIN pawns ON pawns.pawn_id = redemptions.pawn_id
+                LEFT JOIN accounts ON accounts.account_id = pawns.account_id
+                LEFT JOIN items ON items.item_id = pawns.item_id
+              WHERE redemptions.created BETWEEN '${dateFormat(params.from, 'yyyy-mm-dd')}' AND '${dateFormat(params.to, 'yyyy-mm-dd')}'
+              ORDER by redemptions.created DESC`,
+      [],
+      function(err, data) {
+        if (err) {
+          console.log(err);
+          res.status(401);
+          res.json(messages.ErrorResponse);
+          return;
+        }
+
+        res.status(200);
+        res.json({ success: true, redemptions: data });
+        return;
+      }
+    );
+  },
   search: (req, res) => {
     dac.query(`SELECT (SELECT COUNT(redemption_id) FROM redemptions) AS count, 
                   redemptions.redemption_id AS id, 

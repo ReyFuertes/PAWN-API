@@ -51,6 +51,7 @@ router.delete('/item/delete/:id', items.delete);
  * renewals 
  */
 var renewals = require('./renewals_routes.js');
+router.get('/renewals/print', renewals.print);
 router.get('/renewal/list', renewals.list);
 router.post('/renewal/new', renewals.new);
 router.get('/renewal/edit', renewals.edit);
@@ -61,6 +62,7 @@ router.delete('/renewal/delete/:id', renewals.delete);
  * redemptions 
  */
 var redemptions = require('./redemptions_routes.js');
+router.get('/redemptions/print', redemptions.print);
 router.get('/redemption/list', redemptions.list);
 router.post('/redemption/new', redemptions.new);
 router.get('/redemption/edit', redemptions.edit);
