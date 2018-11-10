@@ -7,6 +7,35 @@ var now = new Date();
 router = express.Router();
 
 var accounts = {
+  print: (req, res) => {
+    var params = req.query;
+    dac.query(`SELECT account_id AS id, 
+                  id_number AS idNumber, 
+                  CONCAT(firstname, ',', lastname) AS fullname, 
+                  contact_number AS phoneNumber, 
+                  birthday, 
+                  valid_id AS validId, 
+                  valid_id_number AS validIdNumber, 
+                  address,
+                  DATE_FORMAT(created, '%m/%e/%Y') AS created
+              FROM accounts 
+              WHERE created BETWEEN '${dateFormat(params.from, 'yyyy-mm-dd')}' AND '${dateFormat(params.to, 'yyyy-mm-dd')}'
+              ORDER by account_id DESC`,
+      [],
+      function(err, data) {
+        if (err) {
+          console.log(err);
+          res.status(401);
+          res.json(messages.ErrorResponse);
+          return;
+        }
+
+        res.status(200);
+        res.json({ success: true, accounts: data });
+        return;
+      }
+    );
+  },
   getOne: (req, res) => {
     var id = req.query.id;
     dac.query(`SELECT account_id AS id, id_number AS idNumber, firstname AS firstName, lastname AS lastName, CONCAT(firstname, ',', lastname) AS fullname, 

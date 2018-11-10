@@ -9,6 +9,36 @@ var helpers = require('../config/helpersFn');
 router = express.Router();
 
 var items = {
+  print: (req, res) => {
+    var params = req.query;
+    dac.query(`SELECT
+                  item_id AS id, 
+                  sku AS sku,
+                  item_name AS itemName, 
+                  item_type AS itemType, 
+                  grams, 
+                  karat, 
+                  description, 
+                  DATE_FORMAT(created, '%m/%e/%Y') AS created, 
+                  modified 
+                FROM items
+              WHERE created BETWEEN '${dateFormat(params.from, 'yyyy-mm-dd')}' AND '${dateFormat(params.to, 'yyyy-mm-dd')}'
+              ORDER by item_id DESC `,
+      [],
+      function(err, data) {
+        if (err) {
+          console.log(err);
+          res.status(401);
+          res.json(messages.ErrorResponse);
+          return;
+        }
+
+        res.status(200);
+        res.json({ success: true, items: data });
+        return;
+      }
+    );
+  },
   getOne: (req, res) => {
     var id = req.query.id;
     dac.query(`SELECT item_id AS id, 
@@ -137,8 +167,8 @@ var items = {
                   grams, 
                   karat, 
                   description, 
-                  created, 
-                  modified 
+                  DATE_FORMAT(created, '%m/%e/%Y') AS created, 
+                  DATE_FORMAT(modified, '%m/%e/%Y') AS modified  
                 FROM items
                 ORDER by item_id DESC 
                 ${queryString}`,

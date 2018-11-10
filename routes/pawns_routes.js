@@ -9,6 +9,52 @@ var helpers = require('../config/helpersFn');
 router = express.Router();
 
 var pawns = {
+  print: (req, res) => {
+    var params = req.query;
+    dac.query(`SELECT
+                  pawns.pawn_id AS id, 
+                  pawns.pawn_ticket_number AS pawnTicketNumber, 
+                  pawns.pawn_date_granted AS pawnDateGranted, 
+                  pawns.pawn_maturity_date AS pawnMaturityDate, 
+                  pawns.pawn_expiry_date AS pawnExpiryDate, 
+                  pawns.pawn_interest AS pawnInterest, 
+                  pawns.pawn_amount AS pawnAmount, 
+                  pawns.pawn_total_amount AS pawnTotalAmount, 
+                  DATE_FORMAT(pawns.created, '%m/%e/%Y') AS created,
+                  items.item_name AS itemName, 
+                  items.item_type AS itemType, 
+                  items.grams, 
+                  items.karat, 
+                  items.description, 
+                  items.modified,
+                  accounts.firstname AS firstName, 
+                  accounts.lastname AS lastName, 
+                  CONCAT(firstname, ',', lastname) AS fullname,
+                  accounts.contact_number AS contactNumber, 
+                  accounts.birthday AS birthDate, 
+                  accounts.address, 
+                  accounts.valid_id AS validId, 
+                  accounts.valid_id_number AS validIdNumber
+              FROM pawns
+              LEFT JOIN items ON pawns.item_id = items.item_id
+              LEFT JOIN accounts ON pawns.account_id = accounts.account_id
+              WHERE pawns.created BETWEEN '${dateFormat(params.from, 'yyyy-mm-dd')}' AND '${dateFormat(params.to, 'yyyy-mm-dd')}'
+              ORDER BY pawns.created DESC `,
+      [],
+      function(err, data) {
+        if (err) {
+          console.log(err);
+          res.status(401);
+          res.json(messages.ErrorResponse);
+          return;
+        }
+
+        res.status(200);
+        res.json({ success: true, pawns: data });
+        return;
+      }
+    );
+  },
   edit: (req, res) => {
     var param = helpers.getParams(req);
   

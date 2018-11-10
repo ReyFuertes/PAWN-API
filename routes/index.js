@@ -12,6 +12,7 @@ router.get('/dashboard/getDashboardReports', dashboard.getDashboardReports);
  * accounts 
  */
 var accounts = require('./accounts_routes.js');
+router.get('/accounts/print', accounts.print);
 router.get('/account', accounts.getOne);
 router.get('/accounts/search', accounts.search);
 router.get('/account/edit', accounts.edit);
@@ -24,6 +25,7 @@ router.delete('/account/delete/:id', accounts.delete);
  * pawns 
  */
 var pawns = require('./pawns_routes.js');
+router.get('/pawns/print', pawns.print);
 router.get('/pawn/search', pawns.search);
 router.get('/pawn/edit', pawns.edit);
 router.get('/pawn/list', pawns.list);
@@ -35,6 +37,7 @@ router.delete('/pawn/delete/:id', pawns.delete);
  * items 
  */
 var items = require('./items_routes.js'); 
+router.get('/items/print', items.print);
 router.get('/item', items.getOne);
 router.get('/item/getTypes', items.getTypes);
 router.get('/item/search', items.search);
