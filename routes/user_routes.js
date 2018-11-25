@@ -9,11 +9,13 @@ var user = {
     user.email = req.body.email || "";
     user.password = req.body.password || "";
     user.token = req.body.token || "";
+    user.branch = req.body.branch || "";
 
-    dac.query(`SELECT email, token
-              FROM users 
-              WHERE email = ? AND password = ? AND token = ?`,
-      [user.email, user.password, user.token],
+    dac.query(`SELECT email, users.token, branch
+              FROM users
+              INNER JOIN branches ON name = users.branch
+              WHERE email = ? AND password = ? AND branch = ?`,
+      [user.email, user.password, user.branch],
       function(err, data) {
     
         if (err) {
@@ -27,7 +29,24 @@ var user = {
         return;
       }
     );
-  }
+  },
+  branches: (req, res) => {
+    console.log('test');
+    dac.query(`SELECT name FROM branches`,
+      [],
+      function(err, data) {
+        if (err) {
+          res.status(401);
+          res.json(messages.ErrorResponse);
+          return;
+        }
+
+        res.status(200);
+        res.json({ success: true, branches: data });
+        return;
+      }
+    );
+  },
 };
 
 module.exports = user;

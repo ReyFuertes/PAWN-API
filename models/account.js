@@ -1,4 +1,4 @@
-var account = (id_number, account_id, firstname, lastname, contact_number, birthdate, valid_id, valid_id_number, address, created, modified) => {
+var account = (id_number, account_id, firstname, lastname, contact_number, birthdate, valid_id, valid_id_number, address, image, created, modified) => {
   this.id_number = id_number || null;
   this.account_id = account_id || null;
   this.firstname = firstname || null;
@@ -8,6 +8,7 @@ var account = (id_number, account_id, firstname, lastname, contact_number, birth
   this.valid_id = valid_id || null;
   this.valid_id_number = valid_id_number || null;
   this.address = address || null;
+  this.image = image || null;
   this.created = created || null;
   this.modified = modified || null;
 };

@@ -1,11 +1,13 @@
 var user = (
   email,
   password,
-  token
+  token,
+  branch
 ) => {
   this.email = email || '';
   this.password = password || '';
   this.token = token || '';
+  this.branch = branch || '';
 };
 
 module.exports = user;

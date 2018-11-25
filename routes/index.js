@@ -12,6 +12,7 @@ router.get('/dashboard/getDashboardReports', dashboard.getDashboardReports);
  * accounts 
  */
 var accounts = require('./accounts_routes.js');
+router.get('/account/uploadImage', accounts.uploadImage);
 router.get('/accounts/print', accounts.print);
 router.get('/account', accounts.getOne);
 router.get('/accounts/search', accounts.search);
@@ -74,6 +75,7 @@ router.delete('/redemption/delete/:id', redemptions.delete);
  */
 var user = require('./user_routes.js');
 router.post('/auth/login', user.login);
+router.get('/branches', user.branches);
 
 router.get('/', function (req, res, next) {
    res.send('<div><h1>Welcome to Pawn API.</h1><p>Author: John Hitler!</p></div>');

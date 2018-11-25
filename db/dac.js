@@ -1,23 +1,29 @@
 var mysql = require('mysql');
 
+// var pool = mysql.createPool({
+//     connectionLimit: 100, //important
+//     host: '198.57.247.137',
+//     user: 'bcss_p_u',
+//     password: 'p@55w0rd',
+//     database: 'bcss_pawnapp',
+//     port: '3306',
+//     debug: false
+// });
+
 var pool = mysql.createPool({
-    connectionLimit: 100, //important
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'pawnapp',
-    debug: false
+  connectionLimit: 100, //important
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'pawnapp',
+  port: '3306',
+  debug: false
 });
 
-/**
- * select statement
- * @param {*select sql} sql 
- * @param {*} req 
- * @param {*} res 
- */
 function query(sql, arg, callbackFn) {
     pool.getConnection(function (err, connection) {
-        if (err) throw err('Could not connect to database..')
+      console.log(err);
+        //if (err) throw err('Could not connect to database..')
 
         connection.query(sql, arg, function (err, rows) {
             if (err) {
@@ -28,36 +34,6 @@ function query(sql, arg, callbackFn) {
         })
         connection.release();
     });
-}
-
-/**
- * insert statement
- * @param {*} sql 
- * @param {*} req 
- * @param {*} res 
- */
-function insertQuery(sql, req, res) {
-    console.log('inserting query..');
-}
-
-/**
- * update statement
- * @param {*} sql 
- * @param {*} req 
- * @param {*} res 
- */
-function updateQuery(sql, req, res) {
-    console.log('inserting query..');
-}
-
-/**
- * delete statement
- * @param {*} sql 
- * @param {*} req 
- * @param {*} res 
- */
-function deleteQuery(sql, req, res) {
-    console.log('inserting query..');
 }
 
 module.exports = {

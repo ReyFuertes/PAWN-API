@@ -5,6 +5,7 @@ var express = require("express");
 var dateFormat = require("dateformat");
 var now = new Date();
 router = express.Router();
+var multer = require('multer');
 
 var accounts = {
   print: (req, res) => {
@@ -184,20 +185,14 @@ var accounts = {
     account.valid_id_number = req.body.validIdNumber || "";
     account.address = req.body.address || "";
     account.created = dateFormat(now, "yyyy-mm-dd hh:mm:ss") || "";
+    account.file = req.body.file;
 
     dac.query(
       `INSERT INTO accounts (id_number, firstname, lastname, contact_number, birthday, valid_id, valid_id_number, address, created) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        account.id_number,
-        account.firstname,
-        account.lastname,
-        account.contact_number,
-        account.birthday,
-        account.valid_id,
-        account.valid_id_number,
-        account.address,
-        account.created
+        account.id_number, account.firstname,account.lastname, account.contact_number, account.birthday, account.valid_id,
+        account.valid_id_number, account.address, account.created
       ],
       function(err, data) {
         //catch error
@@ -270,8 +265,31 @@ var accounts = {
         accounts.list(req, res);
       }
     );
+  },
+  uploadImage: (req, res) => {
+    storeImage(req, res, function (err) {
+      if (err) {
+        res.status(401);
+        res.json({ 'success': false, 'status': false, 'message': 'Image upload failed!' });
+        return
+     }
+
+     res.status(200);
+     res.json({ 'success': true, 'image': req.files[0].filename, 'message': 'Image uploaded successfully' });
+    })
   }
 };
+
+var storage = multer.diskStorage({
+  destination: function (req, file, next) {
+     next(null, 'uploads/account/images');
+  },
+  filename: function (req, file, next) {
+     const ext = file.mimetype.split('/')[1];
+     next(null, 'profile-' + Date.now() + '.' + ext)
+  }
+})
+var storeImage = multer({ storage: storage }).any();
 
 function getParams(req) {
   var params = req.query.params || [];
