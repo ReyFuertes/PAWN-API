@@ -2,6 +2,35 @@ var express = require('express');
 var router = express.Router();
 var cors = require('cors');
 
+var multer  = require('multer')
+router.post('/image/upload/:folder', function (req, res, next) {
+  var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, `uploads/${req.params.folder}/images`)
+    },
+    filename: function (req, file, cb) {
+      const ext = file.mimetype.split('/')[1];
+      cb(null, 'image-' + Date.now() + '.' + ext)
+    }
+  })
+  var uploadPhoto = multer({ storage: storage }).any();
+
+  uploadPhoto(req, res, function(err) {
+    if (err) {
+      res.status(401);
+      res.json({ 'success': false, 'message': 'Upload failed!' });
+      return
+   }
+
+   if (req.files !== null) {
+    var files = req.files;
+    res.status(200);
+    res.json({ 'success': true, 'message': 'Upload successful', 'files': files });
+   }
+  })
+})
+
+
 /**
  * dashboard 
  */
@@ -12,7 +41,6 @@ router.get('/dashboard/getDashboardReports', dashboard.getDashboardReports);
  * accounts 
  */
 var accounts = require('./accounts_routes.js');
-router.get('/account/uploadImage', accounts.uploadImage);
 router.get('/accounts/print', accounts.print);
 router.get('/account', accounts.getOne);
 router.get('/accounts/search', accounts.search);
