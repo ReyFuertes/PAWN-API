@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var cors = require('cors');
 
 var multer  = require('multer')
 router.post('/image/upload/:folder', function (req, res, next) {
@@ -30,6 +29,9 @@ router.post('/image/upload/:folder', function (req, res, next) {
   })
 })
 
+router.get('/images', function(req, res) {
+  console.log(req.body);
+});
 
 /**
  * dashboard 

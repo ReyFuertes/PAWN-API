@@ -102,7 +102,8 @@ var accounts = {
                 birthday AS birthDate, 
                 valid_id AS validId, 
                 valid_id_number AS validIdNumber, 
-                address
+                address,
+                image
                FROM accounts 
                WHERE account_id = ?`,
       [params[0].value],
@@ -149,6 +150,7 @@ var accounts = {
                   valid_id AS validId, 
                   valid_id_number AS validIdNumber, 
                   address,
+                  image,
                   DATE_FORMAT(created, '%m/%e/%Y') AS created
                FROM accounts 
                ORDER by id DESC 
