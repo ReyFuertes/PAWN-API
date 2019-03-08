@@ -17,6 +17,7 @@ var pawns = {
                   pawns.pawn_date_granted AS pawnDateGranted, 
                   pawns.pawn_maturity_date AS pawnMaturityDate, 
                   pawns.pawn_expiry_date AS pawnExpiryDate, 
+                  pawns.auction_date AS auctionDate, 
                   pawns.pawn_interest AS pawnInterest, 
                   pawns.pawn_amount AS pawnAmount, 
                   pawns.pawn_total_amount AS pawnTotalAmount, 
@@ -64,6 +65,7 @@ var pawns = {
           pawns.pawn_date_granted AS pawnDateGranted, 
           pawns.pawn_maturity_date AS pawnMaturityDate, 
           pawns.pawn_expiry_date AS pawnExpiryDate, 
+          pawns.auction_date AS auctionDate, 
           pawns.pawn_interest AS pawnInterest, 
           pawns.pawn_amount AS pawnAmount, 
           pawns.pawn_total_amount AS pawnTotalAmount, 
@@ -103,6 +105,7 @@ var pawns = {
             pawnDateGranted: i.pawnDateGranted,
             pawnMaturityDate: i.pawnMaturityDate,
             pawnExpiryDate: i.pawnExpiryDate,
+            auctionDate: i.auctionDate,
             pawnInterest: i.pawnInterest,
             pawnAmount: i.pawnAmount,
             pawnTotalAmount: i.pawnTotalAmount,
@@ -141,6 +144,7 @@ var pawns = {
                   pawns.pawn_date_granted AS pawnDateGranted, 
                   pawns.pawn_maturity_date AS pawnMaturityDate, 
                   pawns.pawn_expiry_date AS pawnExpiryDate, 
+                  pawns.auction_date AS auctionDate, 
                   pawns.pawn_interest AS pawnInterest, 
                   pawns.pawn_amount AS pawnAmount, 
                   pawns.pawn_total_amount AS pawnTotalAmount, 
@@ -219,6 +223,7 @@ var pawns = {
           pawns.pawn_date_granted AS pawnDateGranted, 
           pawns.pawn_maturity_date AS pawnMaturityDate, 
           pawns.pawn_expiry_date AS pawnExpiryDate, 
+          pawns.auction_date AS auctionDate, 
           pawns.pawn_interest AS pawnInterest, 
           pawns.pawn_amount AS pawnAmount, 
           pawns.pawn_total_amount AS pawnTotalAmount, 
@@ -263,6 +268,7 @@ var pawns = {
     pawn.pawn_date_granted = dateFormat(req.body.date_pawn_granted, "mm/dd/yyyy") || "";
     pawn.pawn_maturity_date = dateFormat(req.body.pawnMaturityDate, "mm/dd/yyyy") || "";
     pawn.pawn_expiry_date = dateFormat(req.body.pawnExpiryDate, "mm/dd/yyyy") || "";
+    pawn.auction_date = dateFormat(req.body.auctionDate, "mm/dd/yyyy") || "";
     pawn.pawn_interest = req.body.pawnInterest || "";
     pawn.pawn_amount = req.body.pawnAmount || "";
     pawn.pawn_total_amount = req.body.pawnTotalAmount || "";
@@ -271,14 +277,15 @@ var pawns = {
     pawn.created = dateFormat(now, "yyyy-mm-dd hh:mm:ss") || null;
     
     dac.query(
-      `INSERT INTO pawns (pawn_ticket_number, pawn_date_granted, pawn_maturity_date, pawn_expiry_date, 
+      `INSERT INTO pawns (pawn_ticket_number, pawn_date_granted, pawn_maturity_date, pawn_expiry_date, auction_date,
                 pawn_interest, pawn_amount, pawn_total_amount, account_id, item_id, created) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         pawn.pawn_ticket_number,
         pawn.pawn_date_granted,
         pawn.pawn_maturity_date,
         pawn.pawn_expiry_date,
+        pawn.auction_date,
         pawn.pawn_interest,
         pawn.pawn_amount,
         pawn.pawn_total_amount,
@@ -302,6 +309,7 @@ var pawns = {
     pawn.pawn_date_granted = dateFormat(req.body.date_pawn_granted, "mm/dd/yyyy") || "";
     pawn.pawn_maturity_date = dateFormat(req.body.pawnMaturityDate, "mm/dd/yyyy") || "";
     pawn.pawn_expiry_date = dateFormat(req.body.pawnExpiryDate, "mm/dd/yyyy") || "";
+    pawn.auction_date = dateFormat(req.body.auctionDate, "mm/dd/yyyy") || "";
     pawn.pawn_interest = req.body.pawnInterest || "";
     pawn.pawn_amount = req.body.pawnAmount || "";
     pawn.pawn_total_amount = req.body.pawnTotalAmount || "";
@@ -311,7 +319,7 @@ var pawns = {
     
     dac.query(
       `UPDATE pawns 
-        SET pawn_ticket_number = ?, pawn_date_granted = ?, pawn_maturity_date = ?, pawn_expiry_date = ?, 
+        SET pawn_ticket_number = ?, pawn_date_granted = ?, pawn_maturity_date = ?, pawn_expiry_date = ?, auction_date = ?,
             pawn_interest = ?, pawn_amount = ?, pawn_total_amount = ?, account_id = ?, item_id = ?, modified = ? 
         WHERE pawn_id = ?`,
       [
@@ -319,6 +327,7 @@ var pawns = {
         pawn.pawn_date_granted,
         pawn.pawn_maturity_date,
         pawn.pawn_expiry_date,
+        pawn.auction_date,
         pawn.pawn_interest,
         pawn.pawn_amount,
         pawn.pawn_total_amount,
