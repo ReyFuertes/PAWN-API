@@ -25,7 +25,7 @@ var items = {
               WHERE created BETWEEN '${dateFormat(params.from, 'yyyy-mm-dd')}' AND '${dateFormat(params.to, 'yyyy-mm-dd')}'
               ORDER by item_id DESC `,
       [],
-      function(err, data) {
+      function (err, data) {
         if (err) {
           console.log(err);
           res.status(401);
@@ -34,7 +34,10 @@ var items = {
         }
 
         res.status(200);
-        res.json({ success: true, items: data });
+        res.json({
+          success: true,
+          items: data
+        });
         return;
       }
     );
@@ -51,9 +54,10 @@ var items = {
                 created, 
                 modified 
               FROM items 
-              WHERE item_id = ?`, 
-             [id], function(err, data) {
-   
+              WHERE item_id = ?`,
+      [id],
+      function (err, data) {
+
         if (err) {
           res.status(401);
           res.json(messages.ErrorResponse);
@@ -61,14 +65,17 @@ var items = {
         }
 
         res.status(200);
-        res.json({ success: true, item: data[0] });
+        res.json({
+          success: true,
+          item: data[0]
+        });
         return;
       }
     );
   },
   getTypes: (req, res) => {
     dac.query(`SELECT id, name, description FROM item_types`, [],
-      function(err, data) {
+      function (err, data) {
         if (err) {
           res.status(401);
           res.json(messages.ErrorResponse);
@@ -76,7 +83,10 @@ var items = {
         }
 
         res.status(200);
-        res.json({ success: true, types: data });
+        res.json({
+          success: true,
+          types: data
+        });
         return;
       }
     );
@@ -101,18 +111,23 @@ var items = {
                   grams LIKE ? OR
                   karat LIKE ? OR
                   description LIKE ?
-                ORDER BY item_id DESC`, 
-             [`%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`,
-              `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`], function(err, data) {
-        
+                ORDER BY item_id DESC`,
+      [`%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`,
+        `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`
+      ],
+      function (err, data) {
+
         if (err) {
           res.status(401);
           res.json(messages.ErrorResponse);
           return;
         }
-     
+
         res.status(200);
-        res.json({ success: true, items: data });
+        res.json({
+          success: true,
+          items: data
+        });
         return;
       }
     );
@@ -121,12 +136,12 @@ var items = {
     var param = helpers.getParams(req);
 
     dac.query(
-      `SELECT sku, item_id AS id, item_name AS itemName, item_type AS itemType, grams, karat, description, created
+      `SELECT sku, item_id AS id, item_name AS itemName, item_type AS itemType, grams, karat, description, created, branch_id, none_jewelry, birth_stone_details, titus_details
               FROM items 
               WHERE item_id = ?
               `,
       [param[0].value],
-      function(err, data) {
+      function (err, data) {
         if (err) {
           res.status(401);
           res.json(messages.ErrorResponse);
@@ -134,7 +149,10 @@ var items = {
         }
 
         res.status(200);
-        res.json({ success: true, item: data[0] });
+        res.json({
+          success: true,
+          item: data[0]
+        });
         return;
       }
     );
@@ -149,14 +167,17 @@ var items = {
       querystringArr = params.split("&");
 
       querystringArr.forEach(item => {
-        var obj = { key: item.split("=")[0], value: item.split("=")[1] };
+        var obj = {
+          key: item.split("=")[0],
+          value: item.split("=")[1]
+        };
         param.push(obj);
       });
 
       queryString =
-        param[0].value && param[1].value
-          ? ` LIMIT ${param[0].value} offset ${param[1].value}`
-          : "LIMIT 10 offset 0";
+        param[0].value && param[1].value ?
+        ` LIMIT ${param[0].value} offset ${param[1].value}` :
+        "LIMIT 10 offset 0";
     }
 
     dac.query(`SELECT (SELECT COUNT(item_id) FROM items) AS count, 
@@ -167,31 +188,40 @@ var items = {
                   grams, 
                   karat, 
                   description, 
+                  branches.name AS branch_name,
+                  none_jewelry, 
+                  birth_stone_details, 
+                  titus_details,
                   DATE_FORMAT(created, '%m/%e/%Y') AS created, 
                   DATE_FORMAT(modified, '%m/%e/%Y') AS modified  
                 FROM items
+                INNER JOIN branches ON branches.id = items.branch_id
                 ORDER by item_id DESC 
                 ${queryString}`,
       [],
-      function(err, data) {
+      function (err, data) {
 
         if (err) {
           res.status(401);
           res.json(messages.ErrorResponse);
           return;
         }
-    
+
         var totalCount = 0;
-        if(data.length > 0) {
+        if (data.length > 0) {
           totalCount = data[0].count;
           data.forEach(row => {
             delete row.count;
           });
         }
-        
+
 
         res.status(200);
-        res.json({ success: true, totalCount: totalCount, items: data });
+        res.json({
+          success: true,
+          totalCount: totalCount,
+          items: data
+        });
         return;
       }
     );
@@ -204,10 +234,15 @@ var items = {
     item.karat = req.body.karat || "";
     item.description = req.body.description || "";
     item.created = dateFormat(now, "yyyy-mm-dd hh:mm:ss") || null;
-    
+
+    item.branch_id = req.body.branch_id || "";
+    item.none_jewelry = req.body.noneJewelry || "";
+    item.birth_stone_details = req.body.birthStoneDetails || "";
+    item.titus_details = req.body.titusDetails || "";
+
     dac.query(
-      `INSERT INTO items (sku, item_name, item_type, grams, karat, description, created) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO items (sku, item_name, item_type, grams, karat, description, created, branch_id, none_jewelry, birth_stone_details, titus_details) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         item.sku,
         item.item_name,
@@ -215,9 +250,13 @@ var items = {
         item.grams,
         item.karat,
         item.description,
-        item.created
+        item.created,
+        item.branch_id,
+        item.none_jewelry,
+        item.birth_stone_details,
+        item.titus_details
       ],
-      function(err, data) {
+      function (err, data) {
         console.log(err);
         //catch error
         if (err) {
@@ -252,7 +291,7 @@ var items = {
         item.modified,
         item.item_id
       ],
-      function(err, data) {
+      function (err, data) {
         //catch error
         if (err) {
           res.status(401);
@@ -268,7 +307,7 @@ var items = {
   delete: (req, res) => {
     item.item_id = req.params.id || 0;
 
-    dac.query(`DELETE FROM items WHERE item_id = ?`, [item.item_id], function(
+    dac.query(`DELETE FROM items WHERE item_id = ?`, [item.item_id], function (
       err,
       data
     ) {
