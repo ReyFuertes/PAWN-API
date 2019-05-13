@@ -32,12 +32,14 @@ var renewals = {
                 accounts.valid_id AS validId, 
                 accounts.valid_id_number AS validIdNumber, 
                 accounts.address,
+                accounts.image,
 
                 pawns.pawn_ticket_number AS pawnTicketNumber, 
                 pawns.pawn_date_granted AS pawnDateGranted, 
                 pawns.pawn_maturity_date AS pawnMaturityDate, 
                 pawns.pawn_expiry_date AS pawnExpiryDate, 
-                pawns.pawn_interest AS pawnInterest, 
+                pawns.pawn_interest_rate AS pawnInterestRate, 
+                pawns.pawn_interest_amount AS pawnInterestAmount, 
                 pawns.pawn_amount AS pawnAmount, 
                 pawns.pawn_total_amount AS pawnTotalAmount, 
 
@@ -92,12 +94,14 @@ var renewals = {
                   accounts.valid_id AS validId, 
                   accounts.valid_id_number AS validIdNumber, 
                   accounts.address,
-
+                  accounts.image,
+                  
                   pawns.pawn_ticket_number AS pawnTicketNumber, 
                   pawns.pawn_date_granted AS pawnDateGranted, 
                   pawns.pawn_maturity_date AS pawnMaturityDate, 
                   pawns.pawn_expiry_date AS pawnExpiryDate, 
-                  pawns.pawn_interest AS pawnInterest, 
+                  pawns.pawn_interest_rate AS pawnInterestRate, 
+                  pawns.pawn_interest_amount AS pawnInterestAmount, 
                   pawns.pawn_amount AS pawnAmount, 
                   pawns.pawn_total_amount AS pawnTotalAmount, 
 
@@ -161,13 +165,14 @@ var renewals = {
                 accounts.valid_id AS validId, 
                 accounts.valid_id_number AS validIdNumber, 
                 accounts.address,
+                accounts.image,
 
                 pawns.pawn_id AS pawnId,
                 pawns.pawn_ticket_number AS pawnTicketNumber, 
                 pawns.pawn_date_granted AS pawnDateGranted, 
                 pawns.pawn_maturity_date AS pawnMaturityDate, 
                 pawns.pawn_expiry_date AS pawnExpiryDate, 
-                pawns.pawn_interest AS pawnInterest, 
+                pawns.pawn_interest_amount AS pawnInterestAmount, 
                 pawns.pawn_amount AS pawnAmount, 
                 pawns.pawn_total_amount AS pawnTotalAmount, 
 
@@ -217,7 +222,8 @@ var renewals = {
               birthDate: i.birthDate, 
               address: i.address, 
               validId: i.validId, 
-              validIdNumber: i.validIdNumber
+              validIdNumber: i.validIdNumber,
+              image: i.image
             },
             item: {
               id: i.itemId,
@@ -234,13 +240,14 @@ var renewals = {
               pawnDateGranted: i.pawnDateGranted, 
               pawnMaturityDate: i.pawnMaturityDate, 
               pawnExpiryDate: i.pawnExpiryDate, 
-              pawnInterest: i.pawnInterest, 
+              pawnInterestRate: i.pawnInterestRate, 
+              pawnInterestAmount: i.pawnInterestAmount,
               pawnAmount: i.pawnAmount, 
               pawnTotalAmount: i.pawnTotalAmount, 
             }
           }
         });
-        console.log(_renewal);
+
         res.status(200);
         res.json({ success: true, renewal: _renewal });
         return;
@@ -290,12 +297,14 @@ var renewals = {
           accounts.valid_id AS validId, 
           accounts.valid_id_number AS validIdNumber, 
           accounts.address,
+          accounts.image,
 
           pawns.pawn_ticket_number AS pawnTicketNumber, 
           pawns.pawn_date_granted AS pawnDateGranted, 
           pawns.pawn_maturity_date AS pawnMaturityDate, 
           pawns.pawn_expiry_date AS pawnExpiryDate, 
-          pawns.pawn_interest AS pawnInterest, 
+          pawns.pawn_interest_rate AS pawnInterestRate, 
+          pawns.pawn_interest_amount AS pawnInterestAmount, 
           pawns.pawn_amount AS pawnAmount, 
           pawns.pawn_total_amount AS pawnTotalAmount, 
 

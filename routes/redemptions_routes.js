@@ -36,7 +36,8 @@ var redemptions = {
                   pawns.pawn_date_granted AS pawnDateGranted, 
                   pawns.pawn_maturity_date AS pawnMaturityDate, 
                   pawns.pawn_expiry_date AS pawnExpiryDate, 
-                  pawns.pawn_interest AS pawnInterest, 
+                  pawns.pawn_interest_rate AS pawnInterestRate, 
+                  pawns.pawn_interest_amount AS pawnInterestAmount, 
                   pawns.pawn_amount AS pawnAmount, 
                   pawns.pawn_total_amount AS pawnTotalAmount, 
 
@@ -56,7 +57,7 @@ var redemptions = {
               WHERE redemptions.created BETWEEN '${dateFormat(params.from, 'yyyy-mm-dd')}' AND '${dateFormat(params.to, 'yyyy-mm-dd')}'
               ORDER by redemptions.created DESC`,
       [],
-      function(err, data) {
+      function (err, data) {
         if (err) {
           console.log(err);
           res.status(401);
@@ -65,7 +66,10 @@ var redemptions = {
         }
 
         res.status(200);
-        res.json({ success: true, redemptions: data });
+        res.json({
+          success: true,
+          redemptions: data
+        });
         return;
       }
     );
@@ -97,7 +101,8 @@ var redemptions = {
                   pawns.pawn_date_granted AS pawnDateGranted, 
                   pawns.pawn_maturity_date AS pawnMaturityDate, 
                   pawns.pawn_expiry_date AS pawnExpiryDate, 
-                  pawns.pawn_interest AS pawnInterest, 
+                  pawns.pawn_interest_rate AS pawnInterestRate, 
+                  pawns.pawn_interest_amount AS pawnInterestAmount, 
                   pawns.pawn_amount AS pawnAmount, 
                   pawns.pawn_total_amount AS pawnTotalAmount, 
 
@@ -121,22 +126,25 @@ var redemptions = {
                   item_name LIKE ? OR
                   remarks LIKE ?
                 ORDER BY redemptions.created DESC `,
-            [`%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`], 
-        function(err, data) {
+      [`%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`],
+      function (err, data) {
         if (err) {
           res.status(401);
           res.json(messages.ErrorResponse);
           return;
         }
         res.status(200);
-        res.json({ success: true, items: data });
+        res.json({
+          success: true,
+          items: data
+        });
         return;
       }
     );
   },
   edit: (req, res) => {
     var param = helpers.getParams(req);
- 
+
     dac.query(`SELECT (SELECT COUNT(redemption_id) FROM redemptions) AS count, 
                 redemptions.redemption_id AS id, 
                 redemptions.redemption_date AS redemptionDate, 
@@ -166,7 +174,8 @@ var redemptions = {
                 pawns.pawn_date_granted AS pawnDateGranted, 
                 pawns.pawn_maturity_date AS pawnMaturityDate, 
                 pawns.pawn_expiry_date AS pawnExpiryDate, 
-                pawns.pawn_interest AS pawnInterest, 
+                pawns.pawn_interest_rate AS pawnInterestRate, 
+                pawns.pawn_interest_amount AS pawnInterestAmount, 
                 pawns.pawn_amount AS pawnAmount, 
                 pawns.pawn_total_amount AS pawnTotalAmount, 
 
@@ -186,8 +195,8 @@ var redemptions = {
               WHERE redemption_id = ?
               `,
       [param[0].value],
-      function(err, data) {
-    
+      function (err, data) {
+
         if (err) {
           res.status(401);
           res.json(messages.ErrorResponse);
@@ -209,38 +218,42 @@ var redemptions = {
             pawnId: i.pawnId,
             account: {
               id: i.accountId,
-              firstName: i.firstName, 
-              lastName: i.lastName, 
-              contactNumber: i.contactNumber, 
-              birthDate: i.birthDate, 
-              address: i.address, 
-              validId: i.validId, 
+              firstName: i.firstName,
+              lastName: i.lastName,
+              contactNumber: i.contactNumber,
+              birthDate: i.birthDate,
+              address: i.address,
+              validId: i.validId,
               validIdNumber: i.validIdNumber
             },
             item: {
               id: i.itemId,
               sku: i.sku,
-              itemName: i.itemName, 
-              itemType: i.itemType, 
-              grams: i.grams, 
-              karat: i.karat, 
-              description: i.description, 
+              itemName: i.itemName,
+              itemType: i.itemType,
+              grams: i.grams,
+              karat: i.karat,
+              description: i.description,
             },
             pawn: {
               id: i.pawnId,
               pawnTicketNumber: i.pawnTicketNumber,
-              pawnDateGranted: i.pawnDateGranted, 
-              pawnMaturityDate: i.pawnMaturityDate, 
-              pawnExpiryDate: i.pawnExpiryDate, 
-              pawnInterest: i.pawnInterest, 
-              pawnAmount: i.pawnAmount, 
-              pawnTotalAmount: i.pawnTotalAmount, 
+              pawnDateGranted: i.pawnDateGranted,
+              pawnMaturityDate: i.pawnMaturityDate,
+              pawnExpiryDate: i.pawnExpiryDate,
+              pawnInterestRate: i.pawnInterestRate,
+              pawnInterestAmount: i.pawnInterestAmount,
+              pawnAmount: i.pawnAmount,
+              pawnTotalAmount: i.pawnTotalAmount,
             }
           }
         });
         console.log(_redemption);
         res.status(200);
-        res.json({ success: true, redemption: _redemption });
+        res.json({
+          success: true,
+          redemption: _redemption
+        });
         return;
       }
     );
@@ -255,17 +268,20 @@ var redemptions = {
       querystringArr = params.split("&");
 
       querystringArr.forEach(item => {
-        var obj = { key: item.split("=")[0], value: item.split("=")[1] };
+        var obj = {
+          key: item.split("=")[0],
+          value: item.split("=")[1]
+        };
         param.push(obj);
       });
 
       queryString =
-        param[0].value && param[1].value
-          ? ` LIMIT ${param[0].value} offset ${param[1].value}`
-          : "LIMIT 10 offset 0";
+        param[0].value && param[1].value ?
+        ` LIMIT ${param[0].value} offset ${param[1].value}` :
+        "LIMIT 10 offset 0";
     }
-    
-    dac.query( 
+
+    dac.query(
       `SELECT (SELECT COUNT(redemption_id) FROM redemptions) AS count, 
         redemptions.redemption_id AS id, 
         redemptions.redemption_date AS redemptionDate, 
@@ -292,7 +308,8 @@ var redemptions = {
         pawns.pawn_date_granted AS pawnDateGranted, 
         pawns.pawn_maturity_date AS pawnMaturityDate, 
         pawns.pawn_expiry_date AS pawnExpiryDate, 
-        pawns.pawn_interest AS pawnInterest, 
+        pawns.pawn_interest_rate AS pawnInterestRate, 
+        pawns.pawn_interest_amount AS pawnInterestAmount, 
         pawns.pawn_amount AS pawnAmount, 
         pawns.pawn_total_amount AS pawnTotalAmount, 
 
@@ -310,17 +327,18 @@ var redemptions = {
       LEFT JOIN accounts ON accounts.account_id = pawns.account_id
       LEFT JOIN items ON items.item_id = pawns.item_id
       ORDER BY redemptions.created DESC 
-      ${queryString}`, 
-       [], function(err, data) {
+      ${queryString}`,
+      [],
+      function (err, data) {
         console.log(err);
         if (err) {
           res.status(401);
           res.json(messages.ErrorResponse);
           return;
         }
-        
+
         var totalCount = 0;
-        if(data.length > 0) {
+        if (data.length > 0) {
           totalCount = data[0].count;
           data.forEach(row => {
             delete row.count;
@@ -328,7 +346,11 @@ var redemptions = {
         }
 
         res.status(200);
-        res.json({ success: true, totalCount: totalCount, redemptions: data });
+        res.json({
+          success: true,
+          totalCount: totalCount,
+          redemptions: data
+        });
         return;
       }
     );
@@ -358,7 +380,7 @@ var redemptions = {
         redemption.pawn_id,
         redemption.created
       ],
-      function(err, data) {
+      function (err, data) {
         //catch error
         if (err) {
           res.status(401);
@@ -399,7 +421,7 @@ var redemptions = {
         redemption.pawn_id,
         redemption.redemption_id
       ],
-      function(err, data) {
+      function (err, data) {
         //catch error
         console.log(err);
         if (err) {
@@ -419,7 +441,7 @@ var redemptions = {
     dac.query(
       `DELETE FROM redemptions WHERE redemption_id = ?`,
       [redemptions.redemption_id],
-      function(err, data) {
+      function (err, data) {
         if (err) {
           res.status(401);
           res.json(messages.ErrorResponse);

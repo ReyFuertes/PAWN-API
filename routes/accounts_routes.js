@@ -13,7 +13,8 @@ var accounts = {
     dac.query(`SELECT account_id AS id, 
                   id_number AS idNumber, 
                   CONCAT(firstname, ',', lastname) AS fullname, 
-                  contact_number AS phoneNumber, 
+                  phone_number AS phoneNumber, 
+                  mobile_number AS mobileNumber,
                   birthday, 
                   valid_id AS validId, 
                   valid_id_number AS validIdNumber, 
@@ -39,7 +40,7 @@ var accounts = {
   },
   getOne: (req, res) => {
     var id = req.query.id;
-    dac.query(`SELECT account_id AS id, id_number AS idNumber, firstname AS firstName, lastname AS lastName, CONCAT(firstname, ',', lastname) AS fullname, 
+    dac.query(`SELECT account_id AS id, id_number AS idNumber, firstname AS firstName, lastname AS lastName, CONCAT(firstname, ',', lastname) AS fullname,            phone_number AS phoneNumber, mobile_number AS mobileNumber,
                   contact_number AS phoneNumber, birthday AS birthDate, valid_id AS validId, valid_id_number AS validIdNumber, address 
                 FROM accounts 
                 WHERE account_id = ?
@@ -64,13 +65,18 @@ var accounts = {
     dac.query(`SELECT (SELECT COUNT(account_id) AS count FROM accounts) AS count, 
                   account_id AS id, id_number AS idNumber, 
                   CONCAT(firstname, ',', lastname) AS fullname, 
-                  contact_number AS phoneNumber, birthday, valid_id AS validId, 
+                  middlename AS middleName, 
+                  contact_number AS phoneNumber, 
+                  phone_number AS phoneNumber, 
+                  mobile_number AS mobileNumber,
+                  birthday, valid_id AS validId, 
                   valid_id_number AS validIdNumber, address 
                 FROM accounts 
                 WHERE 
                   id_number LIKE ? OR
                   firstname LIKE ? OR
                   lastname LIKE ? OR
+                  middlename LIKE ? OR
                   contact_number LIKE ? OR
                   valid_id_number LIKE ? OR
                   address LIKE ?
@@ -98,7 +104,10 @@ var accounts = {
                 id_number AS idNumber, 
                 firstname AS firstName, 
                 lastname AS lastName,
+                middlename AS middleName, 
                 contact_number AS phoneNumber, 
+                phone_number AS phoneNumber, 
+                mobile_number AS mobileNumber,
                 birthday AS birthDate, 
                 valid_id AS validId, 
                 valid_id_number AS validIdNumber, 
@@ -145,7 +154,10 @@ var accounts = {
                   account_id AS id, 
                   id_number AS idNumber, 
                   CONCAT(firstname, ',', lastname) AS fullname, 
+                  middlename AS middleName, 
                   contact_number AS phoneNumber, 
+                  phone_number AS phoneNumber, 
+                  mobile_number AS mobileNumber,
                   birthday, 
                   valid_id AS validId, 
                   valid_id_number AS validIdNumber, 
@@ -189,11 +201,15 @@ var accounts = {
     account.created = dateFormat(now, "yyyy-mm-dd hh:mm:ss") || "";
     account.image = req.body.image;
 
+    account.phone_number  = req.body.phoneNumber || "";
+    account.mobile_number = req.body.phoneNumber || "";
+    account.middlename = req.body.middleName || "";
+
     dac.query(
-      `INSERT INTO accounts (id_number, firstname, lastname, contact_number, birthday, valid_id, valid_id_number, address, image, created) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO accounts (id_number, firstname, lastname, middlename, phone_number, mobile_number, birthday, valid_id, valid_id_number, address, image, created) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        account.id_number, account.firstname,account.lastname, account.contact_number, account.birthday, account.valid_id,
+        account.id_number, account.firstname,account.lastname, account.middlename, account.phone_number, account.mobile_number, account.birthday, account.valid_id,
         account.valid_id_number, account.address, account.image, account.created
       ],
       function(err, data) {
@@ -223,14 +239,20 @@ var accounts = {
     account.image = req.body.image;
     account.modified = dateFormat(now, "yyyy-mm-dd") || "";
  
+    account.phone_number  = req.body.phoneNumber || "";
+    account.mobile_number = req.body.phoneNumber || "";
+    account.middlename = req.body.middleName || "";
+
     dac.query(
-      `UPDATE accounts SET id_number = ?, firstname = ?, lastname = ?, contact_number = ?, birthday = ?, valid_id = ?, valid_id_number = ?, address = ?, image = ?, modified = ? 
+      `UPDATE accounts SET id_number = ?, firstname = ?, lastname = ?, middlename = ?, phone_number = ?, mobile_number  = ?, birthday = ?, valid_id = ?, valid_id_number = ?, address = ?, image = ?, modified = ? 
             WHERE account_id = ?`,
       [
         account.id_number,
         account.firstname,
         account.lastname,
-        account.contact_number,
+        account.middlename,
+        account.phone_number ,
+        account.mobile_number,
         account.birthday,
         account.valid_id,
         account.valid_id_number,

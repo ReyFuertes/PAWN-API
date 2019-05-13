@@ -10,7 +10,7 @@ var user = {
     user.password = req.body.password || "";
     user.token = req.body.token || "";
     user.branch = req.body.branch || "";
-
+    console.log(user);
     dac.query(`SELECT email, users.token, branch
               FROM users
               INNER JOIN branches ON name = users.branch
@@ -31,7 +31,6 @@ var user = {
     );
   },
   branches: (req, res) => {
-    console.log('test');
     dac.query(`SELECT name FROM branches`,
       [],
       function(err, data) {
