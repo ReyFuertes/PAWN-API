@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "build-deploy": "ng build --prod --base-href https://reyfuertes.github.io/PAWN_API/ && ngh --dir=dist/"
   },
   "dependencies": {
     "bcrypt": "^1.0.2",
