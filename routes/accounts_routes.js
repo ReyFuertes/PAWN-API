@@ -61,12 +61,13 @@ var accounts = {
   },
   search: (req, res) => {
     var searchTerm = req.query.term;
-
+  
     dac.query(`SELECT (SELECT COUNT(account_id) AS count FROM accounts) AS count, 
-                  account_id AS id, id_number AS idNumber, 
+                  account_id AS id, 
+                  id_number AS idNumber, 
                   CONCAT(firstname, ',', lastname) AS fullname, 
                   middlename AS middleName, 
-                  contact_number AS phoneNumber, 
+                  contact_number AS contactNumber, 
                   phone_number AS phoneNumber, 
                   mobile_number AS mobileNumber,
                   birthday, valid_id AS validId, 
@@ -83,10 +84,11 @@ var accounts = {
                 ORDER BY id DESC
                 `, 
              [`%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`,
-              `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`], function(err, data) {
+              `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`, `%${searchTerm}%`], function(err, data) {
    
         if (err) {
           res.status(401);
+          console.log(err);
           res.json(messages.ErrorResponse);
           return;
         }
