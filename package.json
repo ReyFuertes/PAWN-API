@@ -1,10 +1,12 @@
 {
   "name": "wb-api",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "engines": {
+    "node": "8.9.4"
+  },
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
-    "build-deploy": "ng build --prod --base-href https://reyfuertes.github.io/PAWN_API/ && ngh --dir=dist/"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
     "bcrypt": "^1.0.2",
