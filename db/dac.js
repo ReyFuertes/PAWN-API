@@ -2,9 +2,9 @@ var mysql = require('mysql');
 
 var pool = mysql.createPool({
     connectionLimit: 100, //important
-    host: '198.57.247.137',
-    user: 'bcss_p_u',
-    password: 'p@55w0rd',
+    host: '192.254.251.210',
+    user: 'bcss_pa_user',
+    password: 'p@55w0rd61085',
     database: 'bcss_pawnapp',
     port: '3306',
     debug: false
